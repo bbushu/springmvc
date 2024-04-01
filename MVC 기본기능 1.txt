@@ -1,0 +1,62 @@
+
+----------- 로깅은 왜쓸까? (기초적으로 배워보자)
+System.out.println()을 사용하지 않고 로깅을 사용하는 이유는 뭘까?
+일단 성능이 좋음
+수많은 정보들이 출력이돼서 버그를 찾기도 쉬움
+로그의 진가는 다양한 방식으로 로깅할수있다. ( trace, debug,info,warn,error )
+
+##만약 원하는 레벨까지 보고싶다면 application.properties에 
+logging.level.hello.springmvc=trace
+와 같이 레벨을 설정할 수 있음. (기본은 info레벨까지 출력됨)
+
+물론 logging.level.root=info 와 같이 기본레벨을 자신이 설정할 수도 있다.
+
+SLF4J라는 인터페이스를 사용하고 그 구현체로는 Logback을 자주사용한다.
+
+로그는 옳바른 사용법이 있다.(더하기연산을 사용하면 X)
+log.debug("data={}", data) 
+
+------------------------------------------------------------------
+@RestController 는 뭘까?
+Controller는 View이름이 반환되지만 @RestController는 메시지가 그대로 반환된다.
+
+@RequestMapping과 같은건 배열로 받을수도 있다.
+@RequestMapping({"/hello-basic", "/hello-go"})
+
+@PathVariable(경로 변수)
+@PathVariable은 매핑된 url에 {} 를 붙혀 변수와 같이 만들고 파라미터에 같은 이름을 넣어 매칭시켜줌
+- url경로를 템플릿화 함.
+@GetMapping("/mapping/{userId}")
+    public String mappingPath(@PathVariable("userId") String data) 
+★만약에 이와중에도 변수명이 같으면 생략도 가능함
+@GetMapping("/mapping/{userId}")
+    public String mappingPath(@PathVariable String userId) 
+
+@GetMapping("/mapping/users/{userId}/orders/{orderId}") 이렇게 다중매핑을 하면어떻게 될까?
+@PathVariable String userId, @PathVariable Long orderId 와 같이 파라미터를 작성하고
+http://localhost:8080/mapping/users/userA/orders/100 와 같이 url에 넣어주면 잘 작동한다.
+
+
+------------------------------------------------------------------
+@RequestParam 은 String, int, Integer와 같이 단순 타입이면 @RequestParam도 생략이 가능함
+(하지만 이것조차 없으면 파악하기가 어려울수가 있다는 단점이 있음.)
+@RequestParam(required = false) String username 처럼 required를 false로 두면 없어도 이 쿼리는 없어도 되게 할수있다. (ex: 선택사항 만들때 등등)
+※주의사항 
+1. int타입은 required = false라고 처리를 해도 없을수가없는 이유가 null이 들어가면 500에러를 발생시킴. (따라서 Integer를 사용하면 null 값을 받을수 있다 !)
+2. String 타입이여도 username= 와 같이 아무 값없이 제출해도 "" 은 null이 아니므로 에러없이 username= 와 같이 출력된다.
+
+defaultValue = "guest" 와 같이 @RequestParam파라미터안에 값을 넣어주면 기본값을 생성하게 할수있다. (이로인해 int값도 null이 생성되지 않게 할 수 있다.)
+
+------------------------------------------------------------------
+@ModelAttriubte
+만약 @ModelAttribute HelloData helloData 라고 한다면 HelloData 객체를 생성한 후 HelloData 객체의 프로퍼티를 찾음. 그리고 해당 프로퍼티의 setter를 호출해서 파라미터의 값을 입력함.
+ex) 파라미터이름이 username이면 setUsername() 메서드를 찾아서 호출하면서 값을 입력함.
+
+@ModelAttribute또한 생략이 가능하다. (HelloData helloData)
+
+정리를 한번해보자.
+@RequestParam (String, int, Integer와 같은 단순타입에서 사용)
+@ModelAttriube (나머지에선 사용됨) 
++ 둘다 생략이가능함
+
+단 , argumentResolver에 관한 부분에선 ModelAttribute사용이 불가능하다. (ex: HttpServletResponse)
