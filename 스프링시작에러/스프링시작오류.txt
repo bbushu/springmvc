@@ -1,0 +1,9 @@
+1. Setting -> build Execution Deployment -> Gradle -> Gradle JVM 버젼 확인
+2. 우측상단 Edit Configuration -> Build and run 자바 버젼확인
+3. gradle -> wrapper -> gradle-wrapper.properties 환경설정확인
+4. build.gradle -> sourceCompatibility = '17' 확인 + 롬복확인
+compileOnly 'org.projectlombok:lombok:1.18.20' <-- 1.18.20 기재해야함
+annotationProcessor 'org.projectlombok:lombok:1.18.20' <-- 1.18.20 기재해야함
+
+properties 한글깨짐
+setting -> iso-8803 뭐시기를 utf-8로 + transparency 뭐시기 체크
